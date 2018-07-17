@@ -8,13 +8,6 @@ const sassExtract = new ExtractTextPlugin('css/sass.css');
 const os = require('os');
 const interfaces = os.networkInterfaces();
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
-let ispord = false;
-console.log('aaa', process.argv);
-for(let i in process.argv){
-    if(process.argv[i] === '-o' ||process.argv[i] === '-open') {
-        ispord = true;
-    }
-}
 let IPv4,hostname;
 for(let devName in interfaces ) {
     let iface = interfaces[devName];
@@ -82,6 +75,9 @@ module.exports = {
                 removeAttributeQuotes: true // 压缩 去掉引号
             }
         }),
-        new OpenBrowserPlugin({ url: `http://${hostname}:9090` })
+        new OpenBrowserPlugin({ url: `http://${hostname}:9090` }),
+        new webpack.DllReferencePlugin({ // 这样就会从dll中获取vue,而且不用再次打包vue
+            manifest: require(path.join(__dirname,'dist','vue.manifest.json'))
+        })
     ]
 };
